@@ -5,8 +5,7 @@
 #'
 #' @param path File name of the encrypted json key
 #'
-#' @importFrom sodium data_decrypt
-#' @importFrom gargle secret_nonce
+#' @importFrom sodium data_decrypt hex2bin
 
 secret_read <- function(path) {
 
@@ -17,11 +16,8 @@ secret_read <- function(path) {
   decrypted <- sodium::data_decrypt(
     bin = raw,
     key = secret_pw_get("GARGLE_PASSWORD"),
-    nonce = gargle:::secret_nonce()
+    nonce =  sodium::hex2bin("cb36bab652dec6ae9b1827c684a7b6d21d2ea31cd9f766ac")
   )
 
   rawToChar(decrypted)
 }
-
-json <- secret_read("gargle-test.json")
-bq_auth(path = rawToChar(json))
