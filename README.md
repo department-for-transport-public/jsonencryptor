@@ -4,11 +4,11 @@ The jsonencryptor package is designed to encrypt JSON service account keys using
 
 To install this package directly from github run:
 
-`remotes::install_github("department-for-transport/jsonencryptor")`
+`remotes::install_github("department-for-transport-public/jsonencryptor")`
 
 ## Generating a secure password
 
-You can either create your own password or get the package to generate it for you, using the secret_pw_gen() function.
+You can either create your own password or get the package to generate it for you, using the `secret_pw_gen()` function.
 
 To use the password during development in Cloud R and to use it to encrypt a json file, assign it to a local variable with `Sys.setenv("GARGLE_PASSWORD" = your_password)`. To use it in rsconnect, navigate to a dashboard you have publisher permissions for, and select the _vars_ tab. Create a new variable with the _name_ GARGLE_PASSWORD and a _value_ of your password, making sure you don't use quotation marks for either. 
 
