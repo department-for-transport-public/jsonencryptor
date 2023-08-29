@@ -32,6 +32,10 @@ To unencrypt your json key, use the `secret_read()` function, passing it the fil
 
 `bq_auth(path = secret_read("my_access_token.json"))`
 
+or in the similar googleCloudStorageR function to authenticate access to GCS:
+
+`gcs_auth(secret_read("my_access_token.json"))`
+
 Both locally and on rsconnect you will need to have set your password variable before this will work.
 
 
