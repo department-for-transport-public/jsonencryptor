@@ -11,16 +11,30 @@
 #' @importFrom fs path dir_create
 #'
 secret_write <- function(name, input, dir = getwd()) {
-  if (is.character(input)) {
+
+  if(!file.exists(input)){
+
+    stop("Json key not found at location ", input)
+
+  }
+
+   if (is.character(input)) {
     input <- readBin(input, "raw", file.size(input))
   } else if (!is.raw(input)) {
     stop("Input needs to be a character or raw file")
   }
 
+
   ##Create directory location
   destdir <- fs::path(dir, "inst", "secret")
   fs::dir_create(destdir)
   destpath <- fs::path(destdir, name)
+
+  if(Sys.getenv("GARGLE_PASSWORD") == ""){
+
+    stop("Gargle password not provided as environmental variable. Use Sys.setenv('GARGLE_PASSWORD' = your_password) to set this")
+
+  }
 
   enc <- sodium::data_encrypt(
     msg = input,
@@ -29,6 +43,8 @@ secret_write <- function(name, input, dir = getwd()) {
   )
   attr(enc, "nonce") <- NULL
   writeBin(enc, destpath)
+
+  message("Encrypted key written to ", destpath)
 
   invisible(destpath)
 }
