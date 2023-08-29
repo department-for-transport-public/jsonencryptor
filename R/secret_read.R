@@ -11,6 +11,18 @@ secret_read <- function(path) {
 
   path <- file.path("inst/secret", path)
 
+  if(!file.exists(path)){
+
+    stop("Encrypted json key not found at location: ", path)
+
+  }
+
+  if(Sys.getenv("GARGLE_PASSWORD") == ""){
+
+    stop("Gargle password not provided as environmental variable. Use Sys.setenv('GARGLE_PASSWORD' = your_password) to set this")
+
+  }
+
   raw <- readBin(path, "raw", file.size(path))
 
   decrypted <- sodium::data_decrypt(
