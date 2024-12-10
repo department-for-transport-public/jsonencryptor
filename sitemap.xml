@@ -1,6 +1,8 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://department-for-transport-public.github.io/jsonencryptor/404.html</loc></url>
 <url><loc>https://department-for-transport-public.github.io/jsonencryptor/LICENSE-text.html</loc></url>
+<url><loc>https://department-for-transport-public.github.io/jsonencryptor/articles/index.html</loc></url>
+<url><loc>https://department-for-transport-public.github.io/jsonencryptor/articles/using_jsonencryptor_for_gcp.html</loc></url>
 <url><loc>https://department-for-transport-public.github.io/jsonencryptor/authors.html</loc></url>
 <url><loc>https://department-for-transport-public.github.io/jsonencryptor/index.html</loc></url>
 <url><loc>https://department-for-transport-public.github.io/jsonencryptor/reference/index.html</loc></url>
