@@ -1,7 +1,7 @@
 Package: jsonencryptor
 Type: Package
 Title: Secure Encryption of json service token keys
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: 
     person("Francesca", "Bryden", , "francesca.bryden@dft.gov.uk", role = c("aut", "cre"))
 Description: Uses the sodium package to encrypt json keys for use locally and in rsconnect 
