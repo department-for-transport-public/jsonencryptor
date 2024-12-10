@@ -1,0 +1,132 @@
+---
+title: "using_jsonencryptor_for_gcp"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{using_jsonencryptor_for_gcp}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(jsonencryptor)
+```
+
+## Using service accounts for R-GCP connectivity
+
+Service accounts are an alternative to personal authentication tokens for connecting to Google Cloud Platform (GCP) services. Rather than running on your own user account, service accounts are created by the GCP administrator and are used to authenticate the R session. This is useful for running R scripts when you don't want to authenticate interactively; either because you're running something like Rmarkdown or Shiny, or simply because it's annoying to do it every hour!
+
+## Creating a service account
+
+You can download your service account key from GCP in JSON format. This unencrypted key can be used to authenticate your R session. However, it's not a good idea to store this key in plain text, as it could be easily stolen. Instead, you can use the `jsonencryptor` package to encrypt the key so that it can only be unencrypted with the password you set for it.
+
+## Creating and storing a password
+
+First, you need to install the `jsonencryptor` package from Github:
+
+```r
+install.packages("remotes")
+remotes::install_github("department-for-transport-public/jsonencryptor")   
+```
+
+As the first step, you should set up a password for your service account key. This password will be used to encrypt and decrypt the key. You can create the password using the `secret_pw_gen()` function, which produces a random, hard-to-guess password of a specified length:
+
+```r
+secret_pw_gen()
+```
+
+This password is secret and should _never_ be stored in your code. Instead, you can save it in the .Renviron file in your home directory. This file is used to store environment variables that are loaded when R starts, and are not available to accidentally push to Github, or for anyone else to access. You can add a line like this to your .Renviron file:
+
+```
+GARGLE_PASSWORD = "your_password_here"
+```
+
+Make sure you include an extra line at the end of the file to ensure that the last line is read by R, and then restart R. 
+
+You can check your password is accessible in your R session using the `Sys.getenv()` function:
+
+```r
+Sys.getenv("GARGLE_PASSWORD")
+```
+
+## Encrypting your service account key
+
+Once you have your password set up, you can use the `secret_write()` function to encrypt your service account key. This function takes the path to your service account key and the name you'd like to call your encrypted key as arguments. 
+
+For example, if your service account key is called "service_account_key.json", you can encrypt it using the following code:
+
+```r
+secret_write("service_account_key.json", "encryped_key.json")
+```
+
+This will create a new file called "encrypted_key.json", which is stored inside a `inst/secret` directory. This file is encrypted and can only be decrypted using the password you set up earlier. At this point, you should ensure you _delete_ your original service account key, as it is no longer needed and represents a security risk if accidentally shared
+
+## Using your encrypted key
+
+To use your encrypted key, you can use the `secret_read()` function. This function takes the name of your encrypted key as an argument, and returns the contents of the decrypted key ready to use to authenticate your R session.
+
+For example, you can use the following code to read your encrypted key:
+
+```r
+secret_read("encrypted_key.json")
+```
+
+There's no need to specify that the encrypted key is stored inside the `inst/secret` directory, as the `secret_read()` function knows where to look.
+
+## Using your key to access GCP services
+
+### BigQuery
+
+When using this encrypted key, the easiest and most secure way to do this is to pass the key directly to the `gargle::gargle_oauth()` function, which is used to authenticate your R session with GCP services. For example, you can use the following code to authenticate your R session with the `bigrquery` package:
+
+```r
+library(bigrquery)
+bq_auth(path = secret_read("encrypted_key.json"))
+```
+
+This will authenticate your session, no error message means that it has completed successfully. You can now use the `bigrquery` package to query your GCP data. For example:
+
+```r
+con <- dbConnect(
+  bigrquery::bigquery(),
+  project = "your_project_id",
+  dataset = "your_dataset"
+)
+
+dbListTables(con)
+```
+
+### Google cloud storage
+
+You can also use your encrypted key to access Google Cloud Storage. For example, you can use the `gcs_auth()` function from the `googleCloudStorageR` package to authenticate your R session:
+
+```r
+library(googleCloudStorageR)
+gcs_auth(token = secret_read("encrypted_key.json"))
+```
+
+This will authenticate your session, no error message means that it has completed successfully. You can now use the `googleCloudStorageR` package to access your GCP storage. For example:
+
+```r
+gcs_list_buckets()
+```
+
+## Error handling
+
+If you get an error message when trying to authenticate your session, it's likely that the key is failing to decrypt. This could be because the password is incorrect, or because you are providing the wrong path location to the function. In either case, you will get a similar error that will look like this:
+
+```
+Access Denied: Dataset your-project-name:your-dataset: Permission bigquery.tables.list denied
+  on dataset your-project-name:your-dataset (or it may not exist)
+```
+
+Despite what the error says, this is rarely caused by missing permissions on your service account. Check that your service key exists in the `inst/secret` directory, and that the password is correct. If you're still having trouble, you can try re-encrypting the key using the `secret_write()` function, and then re-authenticating your session.
+
+For any other permissions errors, it is likely that your service account is missing the specified permissions. You can check this by going to the GCP console, and checking the permissions for your service account. 
+
