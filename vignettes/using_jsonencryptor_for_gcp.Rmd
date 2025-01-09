@@ -62,7 +62,7 @@ Once you have your password set up, you can use the `secret_write()` function to
 For example, if your service account key is called "service_account_key.json", you can encrypt it using the following code:
 
 ```r
-secret_write("service_account_key.json", "encryped_key.json")
+secret_write("service_account_key.json", "encrypted_key.json")
 ```
 
 This will create a new file called "encrypted_key.json", which is stored inside a `inst/secret` directory. This file is encrypted and can only be decrypted using the password you set up earlier. At this point, you should ensure you _delete_ your original service account key, as it is no longer needed and represents a security risk if accidentally shared
