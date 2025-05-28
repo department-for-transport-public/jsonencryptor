@@ -4,14 +4,14 @@
 \alias{secret_write}
 \title{Write out password protected json file to the folder inst/secret}
 \usage{
-secret_write(name, input, dir = getwd())
+secret_write(path, input, dir = getwd())
 }
 \arguments{
+\item{path}{File name of the created encrypted json key}
+
 \item{input}{File name of the original unencrypted json key}
 
 \item{dir}{Location to save the inst/secret folder to. Defaults to the current working directory}
-
-\item{path}{File name of the encrypted json key}
 }
 \description{
 Write out password protected json file to the folder inst/secret

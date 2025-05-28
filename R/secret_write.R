@@ -3,14 +3,14 @@
 #' @name secret_write
 #' @export
 #'
-#' @param path File name of the encrypted json key
+#' @param path File name of the created encrypted json key
 #' @param input File name of the original unencrypted json key
 #' @param dir Location to save the inst/secret folder to. Defaults to the current working directory
 #'
 #' @importFrom sodium data_encrypt hex2bin
 #' @importFrom fs path dir_create
 #'
-secret_write <- function(name, input, dir = getwd()) {
+secret_write <- function(path, input, dir = getwd()) {
 
   if(!file.exists(input)){
 

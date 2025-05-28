@@ -57,12 +57,14 @@ Sys.getenv("GARGLE_PASSWORD")
 
 ## Encrypting your service account key
 
-Once you have your password set up, you can use the `secret_write()` function to encrypt your service account key. This function takes the path to your service account key and the name you'd like to call your encrypted key as arguments. 
+Once you have your password set up, you can use the `secret_write()` function to encrypt your service account key. Ensure that your service account key is temporarily stored in your R working directory (you should delete it once encrypted). 
+
+The `secret_write()` function takes the path to your service account key and the name you'd like to call your encrypted key as arguments. 
 
 For example, if your service account key is called "service_account_key.json", you can encrypt it using the following code:
 
 ```r
-secret_write("service_account_key.json", "encrypted_key.json")
+secret_write("encrypted_key.json", "service_account_key.json")
 ```
 
 This will create a new file called "encrypted_key.json", which is stored inside a `inst/secret` directory. This file is encrypted and can only be decrypted using the password you set up earlier. At this point, you should ensure you _delete_ your original service account key, as it is no longer needed and represents a security risk if accidentally shared
