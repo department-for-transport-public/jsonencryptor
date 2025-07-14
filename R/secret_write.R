@@ -28,7 +28,7 @@ secret_write <- function(path, input, dir = getwd()) {
   ##Create directory location
   destdir <- fs::path(dir, "inst", "secret")
   fs::dir_create(destdir)
-  destpath <- fs::path(destdir, name)
+  destpath <- fs::path(destdir, path)
 
   if(Sys.getenv("GARGLE_PASSWORD") == ""){
 
